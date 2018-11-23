@@ -26,11 +26,16 @@ int main(int argc, char *argv[]) {
         int mem_id = shmget(clave, sizeof(_strDisco), IPC_CREAT | 0666);
         if (mem_id != -1) {
           // Obtengo la memoria compartida
-          Disco mem = (Disco) shmat(mem_id, NULL, 0);
-          if (mem != (void *) -1) {
-            crearDisco(mem);
+          Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
+          if (disco != (void *) -1) {
+            disco->inodos[0].esDIR = true;
+            disco->inodos[0].ocupado = true;
+            disco->inodos[0].posBloque[0] = 0;
+            disco->bloques[0].ocupado = true;
             // Libero la memoria compartida
-            if (shmdt(mem) == -1) {
+            if (shmdt(disco) != -1) {
+              cout << "Disco creado correctamente" << endl;
+            } else {
               remove(s.c_str());
               cout << "Error al liberar la memoria" << endl;
             }
