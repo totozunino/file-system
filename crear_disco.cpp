@@ -23,24 +23,27 @@ int main(int argc, char *argv[]) {
       key_t clave = ftok(s.c_str(), 25);
       if (clave > 0) {
         // Creo la memoria compartida
-        int mem_id = shmget(clave, sizeof(Disco), IPC_CREAT | 0666);
+        int mem_id = shmget(clave, sizeof(_strDisco), IPC_CREAT | 0666);
         if (mem_id != -1) {
-          // Me apego a la memoria compartida
+          // Obtengo la memoria compartida
           Disco mem = (Disco) shmat(mem_id, NULL, 0);
           if (mem != (void *) -1) {
-            Disco disco = crearDisco();
-            mem = disco;
-            // Me despego de la memoria compartida
+            crearDisco(mem);
+            // Libero la memoria compartida
             if (shmdt(mem) == -1) {
-              cout << "Error al despegarse de la memoria compartida" << endl;
+              remove(s.c_str());
+              cout << "Error al liberar la memoria" << endl;
             }
           } else {
-            cout << "Error al apegarse a la memoria compartida" << endl;
+            remove(s.c_str());
+            cout << "Error al obtener la memoria" << endl;
           }
         } else {
+          remove(s.c_str());
           cout << "Error al crear la memoria compartida" << endl;
         }
       } else {
+        remove(s.c_str());
         cout << "Error al crear la clave" << endl;
       }
     } else {

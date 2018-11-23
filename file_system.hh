@@ -7,7 +7,23 @@ typedef struct _strInodo *Inodo;
 
 typedef struct _strDisco *Disco;
 
+struct _strBloque {
+    bool ocupado;
+    char datos[512];
+};
+
+struct _strInodo {
+    bool ocupado;
+    bool esDIR;
+    int posBloque[4];
+};
+
+struct _strDisco {
+    Inodo inodos[1024];
+    Bloque bloques[1024];
+};
+
 // Crea el disco
-Disco crearDisco();
+void crearDisco(Disco disco);
 
 #endif
