@@ -5,6 +5,9 @@ typedef struct _strBloque *Bloque;
 
 typedef struct _strInodo *Inodo;
 
-typedef struct _strFileSystem *FileSystem;
+typedef struct _strDisco *Disco;
+
+// Crea el disco
+Disco crearDisco();
 
 #endif
