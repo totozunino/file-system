@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
     if (archivo != -1) {
       // Creo la clave segun el archivo creado
       key_t clave = ftok(s.c_str(), 25);
-      if (clave > 0) {
+      if (clave != -1) {
         // Creo la memoria compartida
         int mem_id = shmget(clave, sizeof(_strDisco), IPC_CREAT | 0666);
         if (mem_id != -1) {
