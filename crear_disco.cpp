@@ -30,6 +30,9 @@ int main(int argc, char *argv[]) {
           if (disco != (void *) -1) {
             disco->inodos[0].esDIR = true;
             disco->inodos[0].ocupado = true;
+            for (int i = 0; i < 1024; i++) {
+              disco->inodos[i].posBloque[i] = -1;
+            }
             disco->inodos[0].posBloque[0] = 0;
             disco->bloques[0].ocupado = true;
             // Libero la memoria compartida

@@ -15,7 +15,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
   if (argc == 2) {
     int largo = largoDireccion(argv[1]);
-    string *strArray[largo];
+    string strArray[largo];
     parsearDireccion(strArray, largo, argv[1]);
     string s = "./";
     s += strArray[0];
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
       if (mem_id != -1) {
         Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
         if (disco != (void *) -1) {
-          crearDirectorio(disco, strArray, largo);
+          checkDirectorio(disco, strArray, largo);
         } else {
           cout << "Error al apegarse a la memoria compartida" << endl;
         }
@@ -36,6 +36,6 @@ int main(int argc, char *argv[]) {
       cout << "Error al crear la clave" << endl;
     }
   } else {
-    cout << "Error, ingrese correctamente el directorio que desea crear" endl;
+    cout << "Error, ingrese correctamente el directorio que desea crear" << endl;
   }
 }
