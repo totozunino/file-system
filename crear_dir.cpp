@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
       if (mem_id != -1) {
         Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
         if (disco != (void *) -1) {
-
+          crearDirectorio(disco, strArray, largo);
         } else {
           cout << "Error al apegarse a la memoria compartida" << endl;
         }
