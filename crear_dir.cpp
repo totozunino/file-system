@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     int largo = largoDireccion(argv[1]);
     string strArray[largo];
     parsearDireccion(strArray, largo, argv[1]);
-    string s = "./";
+    string s = "/tmp/";
     s += strArray[0];
     key_t clave = ftok(s.c_str(), 25);
     if (clave != -1) {
@@ -26,6 +26,10 @@ int main(int argc, char *argv[]) {
         Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
         if (disco != (void *) -1) {
           checkDirectorio(disco, strArray, largo);
+          imprimirBloque(disco);
+          if (shmdt(disco) == -1) {
+            cout << "Error al liberar la memoria compartida" << endl;
+          }
         } else {
           cout << "Error al apegarse a la memoria compartida" << endl;
         }

@@ -79,7 +79,7 @@ bool existeDirectorio(Disco *disco, string nombreDir, int *posBloques) {
 int obtenerInodo(Disco *disco, string nombreDir, int *posBloques) {
   int i = 0;
   bool encontre = false;
-  int inodo = -1;
+  int inodo = 0;
   while (i < cantidadBloques(posBloques) && !encontre) {
     char *copiaDatos = new char[strlen(disco->bloques[posBloques[i]].datos) + 1];
     strcpy(copiaDatos, disco->bloques[posBloques[i]].datos);
@@ -139,35 +139,41 @@ int obtenerBloqueLibre(Disco *disco) {
 void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
   int i = 0;
   bool creado = false;
+  bool asigneBloque = false;
   while (i < cantidadBloques(posBloques) && !creado) {
     string directorio = nombreDir;
     directorio += ":";
     if (obtenerInodoLibre(disco) != "-1") {
-      directorio += obtenerInodoLibre(disco);
-      directorio += ":";
       if ((512 - strlen(disco->bloques[posBloques[i]].datos)) > strlen(directorio.c_str())) {
+        int inodo = stoi(obtenerInodoLibre(disco));
+        directorio += to_string(inodo);
+        directorio += ":";
         strcat(disco->bloques[posBloques[i]].datos, directorio.c_str());
-        disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].ocupado = true;
-        disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].esDIR = true;
+        disco->inodos[inodo].ocupado = true;
+        disco->inodos[inodo].esDIR = true;
         int bloque = obtenerBloqueLibre(disco);
         if (bloque != -1) {
-          disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque[bloque] = bloque;
+          disco->inodos[inodo].posBloque[i] = bloque;
           disco->bloques[bloque].ocupado = true;
           creado = true;
-          cout << "El directorio " << nombreDir << "se creo correctamente" << endl;
+          cout << "El directorio " << nombreDir << " se creo correctamente" << endl;
         } else {
           creado = true;
           cout << "No hay suficientes bloques en el sistema de archivos" << endl;
         }
       } else {
-        if (i == cantidadBloques(posBloques) - 1 && i != 3) {
+        if (i < 3 && !asigneBloque) {
           int bloque = obtenerBloqueLibre(disco);
           disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque[cantidadBloques(posBloques)] = bloque;
           disco->bloques[bloque].ocupado = true;
+          posBloques = disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque;
+          asigneBloque = true;
           i++;
-        } else {
+        } else if (asigneBloque && i == 3) {
           creado = true;
           cout << "No hay espacio suficiente para poder crear " << nombreDir << endl;
+        } else {
+          i++;
         }
       }
     } else {
@@ -180,9 +186,10 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
 void checkDirectorio(Disco *disco, string *strArray, int largo) {
   bool existePath = true;
   bool existeDir = false;
+  bool creado = false;
   int inodo = 0;
   int i = 1;
-  while (i < largo && existePath && !existeDir) {
+  while (i < largo && existePath && !existeDir && !creado) {
     int *posBloques = disco->inodos[inodo].posBloque;
     if (i == largo - 1) {
       if (existeDirectorio(disco, strArray[i], posBloques)) {
@@ -190,6 +197,7 @@ void checkDirectorio(Disco *disco, string *strArray, int largo) {
         cout << "El directorio ya existe" << endl;
       } else {
         crearDirectorio(disco, strArray[i], posBloques);
+        creado = true;
       }
     } else {
       if (existeDirectorio(disco, strArray[i], posBloques)) {
@@ -200,5 +208,13 @@ void checkDirectorio(Disco *disco, string *strArray, int largo) {
         cout << "El path es incorrecto" << endl;
       }
     }
+  }
+}
+
+void imprimirBloque(Disco *disco) {
+  int cantBlo = cantidadBloques(disco->inodos[0].posBloque);
+  for (int i = 0; i < cantBlo; i++) {
+    int blocke = disco->inodos[0].posBloque[i];
+    cout << disco->bloques[blocke].datos << endl;
   }
 }

@@ -14,7 +14,7 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   if (argc == 2) {
-    string s = "./";
+    string s = "/tmp/";
     s += argv[1];
     // Creo el archivo con el nombre del disco
     int archivo = open(s.c_str(), O_RDONLY | O_CREAT | O_EXCL, 0666);
@@ -31,7 +31,9 @@ int main(int argc, char *argv[]) {
             disco->inodos[0].esDIR = true;
             disco->inodos[0].ocupado = true;
             for (int i = 0; i < 1024; i++) {
-              disco->inodos[i].posBloque[i] = -1;
+              for (int j = 0; j < 4; j++) {
+                disco->inodos[i].posBloque[j] = -1;
+              }
             }
             disco->inodos[0].posBloque[0] = 0;
             disco->bloques[0].ocupado = true;

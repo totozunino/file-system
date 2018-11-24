@@ -53,6 +53,11 @@ string obtenerInodoLibre(Disco disco);
 int obtenerBloqueLibre(Disco disco);
 
 // Crea el directorio
+void crearDirectorio(Disco *disco, string nombreDir, int *posBloques);
+
+// Crea el directorio
 void checkDirectorio(Disco *disco, string *strArray, int largo);
+
+void imprimirBloque(Disco *disco);
 
 #endif
