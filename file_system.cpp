@@ -238,12 +238,79 @@ void checkDirectorio(Disco *disco, string *strArray, int largo) {
   }
 }
 
-/*
+void mostrarDir(Disco *disco, string nombreDir, int *posBloques) {
+  int inodo = obtenerInodo(disco, nombreDir, posBloques);
+  int *bloques = disco->inodos[inodo].posBloque;
+  int i = 0;
+  while (i < cantidadBloques(bloques)) {
+    char *copiaDatos = new char[strlen(disco->bloques[bloques[i]].datos + 1)];
+    strcpy(copiaDatos, disco->bloques[bloques[i]].datos);
+    char *valor;
+    valor = strtok(copiaDatos, ":");
+    string directorio;
+    string inodo;
+    directorio = valor;
+    bool primera = true;
+    while (valor != NULL) {
+      if (primera) {
+        valor = strtok(NULL, ":");
+        inodo = valor;
+        primera = false;
+      } else {
+        valor = strtok(NULL, ":");
+        if (valor != NULL) {
+          directorio = valor;
+          valor = strtok(NULL, ":");
+          if (valor != NULL) {
+            inodo = valor;
+          }
+        }
+      }
+      if (valor != NULL) {
+        if (disco->inodos[stoi(inodo)].esDIR) {
+          cout << "d " << directorio << endl;
+        } else {
+          cout << "- " << directorio << endl;
+        }
+      }
+    }
+    i++;
+  }
+}
+
+// hacer las funciones en 1 sola (exiteRuta, checkDirectorio)
+void existeRuta(Disco *disco, string *strArray, int largo) {
+  bool existeRuta = true;
+  bool existeDir = true;
+  bool mostrado = false;
+  int inodo = 0;
+  int i = 1;
+  while (i < largo && existeRuta && existeDir && !mostrado) {
+    int *posBloques = disco->inodos[inodo].posBloque;
+    if (i == largo - 1) {
+      if (existeDirectorio(disco, strArray[i], posBloques)) {
+        mostrarDir(disco, strArray[i], posBloques);
+        mostrado = true;
+      } else {
+        cout << "El directorio " << strArray[i] << " no existe" << endl;
+        existeDir = false;
+      }
+    } else {
+      if (existeDirectorio(disco, strArray[i], posBloques)) {
+        inodo = obtenerInodo(disco, strArray[i], posBloques);
+        i++;
+      } else {
+        existeRuta = false;
+        cout << "La ruta ingresada es incorrecta" << endl;
+      }
+    }
+  }
+}
+
 void imprimirBloque(Disco *disco) {
   int cantBlo = cantidadBloques(disco->inodos[0].posBloque);
   for (int i = 0; i < cantBlo; i++) {
-    int blocke = disco->inodos[0].posBloque[i];
+    int blocke = disco->inodos[1].posBloque[i];
     cout << disco->bloques[blocke].datos << endl;
   }
 }
- */

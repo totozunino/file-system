@@ -66,4 +66,10 @@ bool checkNombreDir(string nombreDir);
 // Retorna true si el nombre del disco es correcto
 bool checkNombreDisco(char *nombreDisco);
 
+// Checkea si existe la ruta
+void existeRuta(Disco *disco, string *strArray, int largo);
+
+// Muestra el contenido de un directorio
+void mostrarDir(Disco *disco, string nombreDir, int *posBloques);
+
 #endif

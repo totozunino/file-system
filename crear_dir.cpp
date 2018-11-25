@@ -27,6 +27,7 @@ int main(int argc, char *argv[]) {
           Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
           if (disco != (void *) -1) {
             checkDirectorio(disco, strArray, largo);
+            imprimirBloque(disco);
             if (shmdt(disco) == -1) {
               cout << "Error al liberar la memoria compartida" << endl;
             }
