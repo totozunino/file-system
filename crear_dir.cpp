@@ -17,29 +17,32 @@ int main(int argc, char *argv[]) {
     int largo = largoDireccion(argv[1]);
     string strArray[largo];
     parsearDireccion(strArray, largo, argv[1]);
-    string s = "/tmp/";
-    s += strArray[0];
-    key_t clave = ftok(s.c_str(), 25);
-    if (clave != -1) {
-      int mem_id = shmget(clave, sizeof(_strDisco), 0);
-      if (mem_id != -1) {
-        Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
-        if (disco != (void *) -1) {
-          checkDirectorio(disco, strArray, largo);
-          imprimirBloque(disco);
-          if (shmdt(disco) == -1) {
-            cout << "Error al liberar la memoria compartida" << endl;
+    if (checkNombreDir(strArray[largo - 1])) {
+      string s = "/tmp/";
+      s += strArray[0];
+      key_t clave = ftok(s.c_str(), 25);
+      if (clave != -1) {
+        int mem_id = shmget(clave, sizeof(_strDisco), 0);
+        if (mem_id != -1) {
+          Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
+          if (disco != (void *) -1) {
+            checkDirectorio(disco, strArray, largo);
+            if (shmdt(disco) == -1) {
+              cout << "Error al liberar la memoria compartida" << endl;
+            }
+          } else {
+            cout << "Error al apegarse a la memoria compartida" << endl;
           }
         } else {
-          cout << "Error al apegarse a la memoria compartida" << endl;
+          cout << "Error no existe el disco" << endl;
         }
       } else {
-        cout << "Error no existe el disco" << endl;
+        cout << "Error al crear la clave" << endl;
       }
     } else {
-      cout << "Error al crear la clave" << endl;
+      cout << "Error el nombre del directorio debe de ser como maximo de 8 caracteres" << endl;
     }
   } else {
-    cout << "Error, ingrese correctamente el directorio que desea crear" << endl;
+    cout << "Error, ingrese correctamente el directorio que desea crear. [crear_dir /path/nombreDir]" << endl;
   }
 }

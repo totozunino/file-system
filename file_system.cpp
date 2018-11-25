@@ -37,6 +37,22 @@ void parsearDireccion(string *strArray, int largo, const char *valores) {
   }
 }
 
+bool checkNombreDisco(char *nombreDisco) {
+  bool correcto = true;
+  string s = nombreDisco;
+  if (s[0] == '.') {
+    correcto = false;
+  }
+  size_t i = 1;
+  while (i < s.length() && correcto) {
+    if (s[i] == '/' || s[i] == '.') {
+      correcto = false;
+    }
+    i++;
+  }
+  return correcto;
+}
+
 int cantidadBloques(int *posBloques) {
   int cant = 0;
   for (int i = 0; i < 4; i++) {
@@ -101,23 +117,20 @@ int obtenerInodo(Disco *disco, string nombreDir, int *posBloques) {
   return inodo;
 }
 
-string obtenerInodoLibre(Disco *disco) {
+int obtenerInodoLibre(Disco *disco) {
   bool encontre = false;
   int i = 0;
-  string inodo;
   while (i < 1024 && !encontre) {
     if (!disco->inodos[i].ocupado) {
       encontre = true;
-      inodo = to_string(i);
     } else {
       i++;
     }
   }
   if (!encontre) {
-    inodo = to_string(-1);
-    return inodo;
+    return -1;
   } else {
-    return inodo;
+    return i;
   }
 }
 
@@ -136,6 +149,10 @@ int obtenerBloqueLibre(Disco *disco) {
   return bloque;
 }
 
+bool checkNombreDir(string nombreDir) {
+  return nombreDir.length() <= 8;
+}
+
 void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
   int i = 0;
   bool creado = false;
@@ -143,9 +160,12 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
   while (i < cantidadBloques(posBloques) && !creado) {
     string directorio = nombreDir;
     directorio += ":";
-    if (obtenerInodoLibre(disco) != "-1") {
-      if ((512 - strlen(disco->bloques[posBloques[i]].datos)) > strlen(directorio.c_str())) {
-        int inodo = stoi(obtenerInodoLibre(disco));
+    if (obtenerInodoLibre(disco) != -1) {
+      string datos = disco->bloques[posBloques[i]].datos;
+      size_t tamDatos = 512;
+      size_t tamRequerido = strlen(directorio.c_str()) + datos.length();
+      if (tamDatos > tamRequerido) {
+        int inodo = obtenerInodoLibre(disco);
         directorio += to_string(inodo);
         directorio += ":";
         strcat(disco->bloques[posBloques[i]].datos, directorio.c_str());
@@ -153,7 +173,7 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
         disco->inodos[inodo].esDIR = true;
         int bloque = obtenerBloqueLibre(disco);
         if (bloque != -1) {
-          disco->inodos[inodo].posBloque[i] = bloque;
+          disco->inodos[inodo].posBloque[0] = bloque;
           disco->bloques[bloque].ocupado = true;
           creado = true;
           cout << "El directorio " << nombreDir << " se creo correctamente" << endl;
@@ -163,12 +183,19 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
         }
       } else {
         if (i < 3 && !asigneBloque) {
-          int bloque = obtenerBloqueLibre(disco);
-          disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque[cantidadBloques(posBloques)] = bloque;
-          disco->bloques[bloque].ocupado = true;
-          posBloques = disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque;
-          asigneBloque = true;
-          i++;
+          if (cantidadBloques(posBloques) < 4) {
+            int bloque = obtenerBloqueLibre(disco);
+            disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque[cantidadBloques(posBloques)] = bloque;
+            disco->bloques[bloque].ocupado = true;
+            posBloques = disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque;
+            asigneBloque = true;
+            i++;
+          } else {
+            i++;
+            if (i == 3) {
+              asigneBloque = true;
+            }
+          }
         } else if (asigneBloque && i == 3) {
           creado = true;
           cout << "No hay espacio suficiente para poder crear " << nombreDir << endl;
@@ -211,6 +238,7 @@ void checkDirectorio(Disco *disco, string *strArray, int largo) {
   }
 }
 
+/*
 void imprimirBloque(Disco *disco) {
   int cantBlo = cantidadBloques(disco->inodos[0].posBloque);
   for (int i = 0; i < cantBlo; i++) {
@@ -218,3 +246,4 @@ void imprimirBloque(Disco *disco) {
     cout << disco->bloques[blocke].datos << endl;
   }
 }
+ */

@@ -60,4 +60,10 @@ void checkDirectorio(Disco *disco, string *strArray, int largo);
 
 void imprimirBloque(Disco *disco);
 
+// Retorna true si el nombre del directorio es correcto
+bool checkNombreDir(string nombreDir);
+
+// Retorna true si el nombre del disco es correcto
+bool checkNombreDisco(char *nombreDisco);
+
 #endif
