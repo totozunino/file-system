@@ -29,19 +29,16 @@ struct _strDisco {
 };
 
 // Retorna el largo del path
-int largoDireccion(const char *direccion);
+int largoRuta(const char *direccion);
 
 // Parsea el path y lo guarda en strArray
-void parsearDireccion(string *strArray, int largo, const char *valores);
-
-// Retorna un array con las posiciones de los bloques
-int *obtenerPosBloques(Inodo inodo);
+void parsearRuta(string *strArray, int largo, const char *valores);
 
 // Retorna true si encontro el directorio en los datos
 bool encontreNombre(char *datos, string nombreDir);
 
 // Retorna true si existe el directorio
-bool existeDirectorio(Disco disco, string nombreDir, int *posBloques);
+bool existeDirectorio(Disco *disco, string nombreDir, int *posBloques);
 
 // Retorna el inodo segun el nombre del directorio
 int obtenerInodo(Disco disco, string nombreDir, int *posBloques);
@@ -67,9 +64,12 @@ bool checkNombreDir(string nombreDir);
 bool checkNombreDisco(char *nombreDisco);
 
 // Checkea si existe la ruta
-void existeRuta(Disco *disco, string *strArray, int largo);
+bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal);
 
 // Muestra el contenido de un directorio
 void mostrarDir(Disco *disco, string nombreDir, int *posBloques);
+
+// Retorna true si el nombre del archivo es correcto
+bool checkNombreArchivo(char *nombreArchivo);
 
 #endif

@@ -12,7 +12,7 @@
 
 using namespace std;
 
-int largoDireccion(const char *direccion) {
+int largoRuta(const char *direccion) {
   int cont = 0;
   char *copiaDireccion = new char[strlen(direccion) + 1];
   strcpy(copiaDireccion, direccion);
@@ -24,7 +24,7 @@ int largoDireccion(const char *direccion) {
   return cont;
 }
 
-void parsearDireccion(string *strArray, int largo, const char *valores) {
+void parsearRuta(string *strArray, int largo, const char *valores) {
   int indice = 0;
   char *copiaValores = new char[strlen(valores) + 1];
   strcpy(copiaValores, valores);
@@ -280,31 +280,29 @@ void mostrarDir(Disco *disco, string nombreDir, int *posBloques) {
   }
 }
 
-// hacer las funciones en 1 sola (exiteRuta, checkDirectorio)
-void existeRuta(Disco *disco, string *strArray, int largo) {
+bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal) {
   bool existeRuta = true;
-  bool existeDir = true;
-  bool mostrado = false;
   int inodo = 0;
   int i = 1;
-  while (i < largo && existeRuta && existeDir && !mostrado) {
+  while (i < largo - 1 && existeRuta) {
     int *posBloques = disco->inodos[inodo].posBloque;
-    if (i == largo - 1) {
-      if (existeDirectorio(disco, strArray[i], posBloques)) {
-        mostrarDir(disco, strArray[i], posBloques);
-        mostrado = true;
-      } else {
-        cout << "El directorio " << strArray[i] << " no existe" << endl;
-        existeDir = false;
-      }
+    if (existeDirectorio(disco, strArray[i], posBloques)) {
+      inodo = obtenerInodo(disco, strArray[i], posBloques);
+      i++;
     } else {
-      if (existeDirectorio(disco, strArray[i], posBloques)) {
-        inodo = obtenerInodo(disco, strArray[i], posBloques);
-        i++;
-      } else {
-        existeRuta = false;
-        cout << "La ruta ingresada es incorrecta" << endl;
-      }
+      existeRuta = false;
+    }
+  }
+  inodoFinal = inodo;
+  return existeRuta;
+}
+
+bool checkNombreArchivo(char *nombreArchivo) {
+  if (strlen(nombreArchivo) <= 8) {
+    return true;
+  } else {
+    if (strlen(nombreArchivo) < 13) {
+      return nombreArchivo[9] == '.';
     }
   }
 }

@@ -14,10 +14,9 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
   if (argc == 2) {
-    int largo = largoDireccion(argv[1]);
+    int largo = largoRuta(argv[1]);
     string strArray[largo];
-    // hacer el refactor de parsearDireccion a paresearRuta
-    parsearDireccion(strArray, largo, argv[1]);
+    parsearRuta(strArray, largo, argv[1]);
     string s = "/tmp/";
     s += strArray[0];
     key_t clave = ftok(s.c_str(), 25);
@@ -26,19 +25,31 @@ int main(int argc, char *argv[]) {
       if (mem_id != -1) {
         Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
         if (disco != (void *) -1) {
-          if (largo > 1) {
-            existeRuta(disco, strArray, largo);
+          int inodo;
+          if (existeRuta(disco, strArray, largo, inodo)) {
+            // Si lo que quiero mostrar es el disco se mete en el else
+            if (largo > 1) {
+              int *posBloques = disco->inodos[inodo].posBloque;
+              if (existeDirectorio(disco, strArray[largo - 1], posBloques)) {
+                mostrarDir(disco, strArray[largo - 1], disco->inodos[inodo].posBloque);
+                if (shmdt(disco) == -1) {
+                  cout << "Error al liberar la memoria compartida" << endl;
+                }
+              } else {
+                cout << "Error el directorio '" << strArray[largo - 1] << "' no existe" << endl;
+              }
+            } else {
+              // Muestro el contenido del disco
+              mostrarDir(disco, strArray[0], disco->inodos[0].posBloque);
+            }
           } else {
-            mostrarDir(disco, strArray[0], disco->inodos[0].posBloque);
-          }
-          if (shmdt(disco) == -1) {
-            cout << "Error al liberar la memoria compartida" << endl;
+            cout << "Error la ruta igresada no es valida" << endl;
           }
         } else {
           cout << "Error al apegarse a la memoria compartida" << endl;
         }
       } else {
-        cout << "Error no existe el disco" << endl;
+        cout << "Error el disco '" << strArray[0] << "' no existe" << endl;
       }
     } else {
       cout << "Error el disco '" << strArray[0] << "' no existe" << endl;
