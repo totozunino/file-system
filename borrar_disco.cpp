@@ -32,11 +32,12 @@ int main(int argc, char *argv[]) {
           cout << "Error al obtener la memoria compartida" << endl;
         }
       } else {
-        cout << "Error al crear la clave" << endl;
+        remove(s.c_str());
+        cout << "Error el disco '" << argv[1] << "' no existe" << endl;
       }
     } else {
       remove(s.c_str());
-      cout << "Error el disco " << argv[1] << " no existe" << endl;
+      cout << "Error el disco '" << argv[1] << "' no existe" << endl;
     }
   } else {
     cout << "Error ingrese el nombre del disco que desea borrar correctamente" << endl;

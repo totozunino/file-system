@@ -249,7 +249,9 @@ void mostrarDir(Disco *disco, string nombreDir, int *posBloques) {
     valor = strtok(copiaDatos, ":");
     string directorio;
     string inodo;
-    directorio = valor;
+    if (valor != NULL) {
+      directorio = valor;
+    }
     bool primera = true;
     while (valor != NULL) {
       if (primera) {

@@ -26,7 +26,11 @@ int main(int argc, char *argv[]) {
       if (mem_id != -1) {
         Disco *disco = (Disco *) shmat(mem_id, NULL, 0);
         if (disco != (void *) -1) {
-          existeRuta(disco, strArray, largo);
+          if (largo > 1) {
+            existeRuta(disco, strArray, largo);
+          } else {
+            mostrarDir(disco, strArray[0], disco->inodos[0].posBloque);
+          }
           if (shmdt(disco) == -1) {
             cout << "Error al liberar la memoria compartida" << endl;
           }
@@ -37,7 +41,7 @@ int main(int argc, char *argv[]) {
         cout << "Error no existe el disco" << endl;
       }
     } else {
-      cout << "Error al crear la clave" << endl;
+      cout << "Error el disco '" << strArray[0] << "' no existe" << endl;
     }
   } else {
     cout << "Error, ingrese correctamente el directorio que desea crear. [crear_dir /path/nombreDir]" << endl;
