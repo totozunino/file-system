@@ -58,12 +58,12 @@ int main(int argc, char *argv[]) {
           cout << "Error al crear la clave" << endl;
         }
       } else {
-        cout << "Error, el disco " << argv[1] << " ya existe " << endl;
+        cout << "Error el disco '" << argv[1] << "' ya existe " << endl;
       }
     } else {
       cout << "Error ingrese el nombre del disco correctamente" << endl;
     }
   } else {
-    cout << "Error, ingrese correctamente el disco que desea crear. [./crear_disco nombre]" << endl;
+    cout << "Error ingrese correctamente el disco que desea crear" << endl;
   }
 }

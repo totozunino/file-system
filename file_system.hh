@@ -28,10 +28,10 @@ struct _strDisco {
     Bloque bloques[1024];
 };
 
-// Retorna el largo del path
+// Retorna el largo de la ruta
 int largoRuta(const char *direccion);
 
-// Parsea el path y lo guarda en strArray
+// Parsea la ruta y la guarda en strArray
 void parsearRuta(string *strArray, int largo, const char *valores);
 
 // Retorna true si encontro el directorio en los datos
