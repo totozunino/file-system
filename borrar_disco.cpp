@@ -24,9 +24,9 @@ int main(int argc, char *argv[]) {
         if (mem_id != -1) {
           if (shmctl(mem_id, IPC_RMID, NULL) != -1) {
             remove(s.c_str());
-            cout << "El disco " << argv[1] << " se borro correctamente" << endl;
+            cout << "El disco '" << argv[1] << "' se borro correctamente" << endl;
           } else {
-            cout << "Error al borrar el disco" << endl;
+            cout << "Error al borrar el disco '" << argv[1] << "'" << endl;
           }
         } else {
           cout << "Error al obtener la memoria compartida" << endl;

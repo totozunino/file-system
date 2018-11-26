@@ -149,15 +149,11 @@ int obtenerBloqueLibre(Disco *disco) {
   return bloque;
 }
 
-bool checkNombreDir(string nombreDir) {
-  return nombreDir.length() <= 8;
-}
-
 void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
   int i = 0;
-  bool creado = false;
+  bool dirCreado = false;
   bool asigneBloque = false;
-  while (i < cantidadBloques(posBloques) && !creado) {
+  while (i < cantidadBloques(posBloques) && !dirCreado) {
     string directorio = nombreDir;
     directorio += ":";
     if (obtenerInodoLibre(disco) != -1) {
@@ -175,10 +171,10 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
         if (bloque != -1) {
           disco->inodos[inodo].posBloque[0] = bloque;
           disco->bloques[bloque].ocupado = true;
-          creado = true;
-          cout << "El directorio " << nombreDir << " se creo correctamente" << endl;
+          dirCreado = true;
+          cout << "El directorio '" << nombreDir << "' se creo correctamente" << endl;
         } else {
-          creado = true;
+          dirCreado = true;
           cout << "No hay suficientes bloques en el sistema de archivos" << endl;
         }
       } else {
@@ -197,43 +193,15 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
             }
           }
         } else if (asigneBloque && i == 3) {
-          creado = true;
+          dirCreado = true;
           cout << "No hay espacio suficiente para poder crear " << nombreDir << endl;
         } else {
           i++;
         }
       }
     } else {
-      creado = true;
+      dirCreado = true;
       cout << "No hay suficientes inodos en el sistema de archivos" << endl;
-    }
-  }
-}
-
-void checkDirectorio(Disco *disco, string *strArray, int largo) {
-  bool existePath = true;
-  bool existeDir = false;
-  bool creado = false;
-  int inodo = 0;
-  int i = 1;
-  while (i < largo && existePath && !existeDir && !creado) {
-    int *posBloques = disco->inodos[inodo].posBloque;
-    if (i == largo - 1) {
-      if (existeDirectorio(disco, strArray[i], posBloques)) {
-        existeDir = true;
-        cout << "El directorio ya existe" << endl;
-      } else {
-        crearDirectorio(disco, strArray[i], posBloques);
-        creado = true;
-      }
-    } else {
-      if (existeDirectorio(disco, strArray[i], posBloques)) {
-        inodo = obtenerInodo(disco, strArray[i], posBloques);
-        i++;
-      } else {
-        existePath = false;
-        cout << "El path es incorrecto" << endl;
-      }
     }
   }
 }
@@ -303,14 +271,18 @@ bool checkNombreArchivo(char *nombreArchivo) {
   } else {
     if (strlen(nombreArchivo) < 13) {
       return nombreArchivo[9] == '.';
+    } else {
+      return false;
     }
   }
 }
 
+/*
 void imprimirBloque(Disco *disco) {
   int cantBlo = cantidadBloques(disco->inodos[0].posBloque);
   for (int i = 0; i < cantBlo; i++) {
-    int blocke = disco->inodos[1].posBloque[i];
+    int blocke = disco->inodos[0].posBloque[i];
     cout << disco->bloques[blocke].datos << endl;
   }
 }
+ */

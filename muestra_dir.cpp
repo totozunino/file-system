@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
             cout << "Error la ruta igresada no es valida" << endl;
           }
         } else {
-          cout << "Error al apegarse a la memoria compartida" << endl;
+          cout << "Error al obtener la memoria compartida" << endl;
         }
       } else {
         cout << "Error el disco '" << strArray[0] << "' no existe" << endl;

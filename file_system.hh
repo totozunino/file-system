@@ -34,37 +34,34 @@ int largoRuta(const char *direccion);
 // Parsea la ruta y la guarda en strArray
 void parsearRuta(string *strArray, int largo, const char *valores);
 
+// Checkea si existe la ruta
+bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal);
+
 // Retorna true si encontro el directorio en los datos
 bool encontreNombre(char *datos, string nombreDir);
 
 // Retorna true si existe el directorio
 bool existeDirectorio(Disco *disco, string nombreDir, int *posBloques);
 
+// Retorna la cantidad de bloques
+int cantidadBloques(int *posBloques);
+
 // Retorna el inodo segun el nombre del directorio
-int obtenerInodo(Disco disco, string nombreDir, int *posBloques);
+int obtenerInodo(Disco *disco, string nombreDir, int *posBloques);
 
 // Retorna el primer inodo libre que encuentre
-string obtenerInodoLibre(Disco disco);
+int obtenerInodoLibre(Disco *disco);
 
 // Retorna el primer bloque libre que encuentre
-int obtenerBloqueLibre(Disco disco);
+int obtenerBloqueLibre(Disco *disco);
 
 // Crea el directorio
 void crearDirectorio(Disco *disco, string nombreDir, int *posBloques);
 
-// Crea el directorio
-void checkDirectorio(Disco *disco, string *strArray, int largo);
-
-void imprimirBloque(Disco *disco);
-
-// Retorna true si el nombre del directorio es correcto
-bool checkNombreDir(string nombreDir);
+// void imprimirBloque(Disco *disco);
 
 // Retorna true si el nombre del disco es correcto
 bool checkNombreDisco(char *nombreDisco);
-
-// Checkea si existe la ruta
-bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal);
 
 // Muestra el contenido de un directorio
 void mostrarDir(Disco *disco, string nombreDir, int *posBloques);

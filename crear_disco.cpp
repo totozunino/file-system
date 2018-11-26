@@ -43,11 +43,11 @@ int main(int argc, char *argv[]) {
                 cout << "Disco creado correctamente" << endl;
               } else {
                 remove(s.c_str());
-                cout << "Error al liberar la memoria" << endl;
+                cout << "Error al liberar la memoria compartida" << endl;
               }
             } else {
               remove(s.c_str());
-              cout << "Error al obtener la memoria" << endl;
+              cout << "Error al obtener la memoria compartida" << endl;
             }
           } else {
             remove(s.c_str());
