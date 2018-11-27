@@ -58,6 +58,9 @@ int obtenerBloqueLibre(Disco *disco);
 // Crea el directorio
 void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir);
 
+// Imprime el contenido de un archivo
+void imprimirArchivo(Disco *disco, string nombreArchivo, int *posBloques);
+
 // void imprimirBloque(Disco *disco);
 
 // Retorna true si el nombre del disco es correcto

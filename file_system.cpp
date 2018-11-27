@@ -284,6 +284,19 @@ bool checkNombreArchivo(string nombreArchivo) {
   }
 }
 
+void imprimirArchivo(Disco *disco, string nombreArchivo, int *posBloques) {
+  int inodo = obtenerInodo(disco, nombreArchivo, posBloques);
+  if (!disco->inodos[inodo].esDIR) {
+    int *bloques = disco->inodos[inodo].posBloque;
+    int cantBloques = cantidadBloques(bloques);
+    for (int i = 0; i < cantBloques; i++) {
+      cout << disco->bloques[bloques[i]].datos;
+    }
+  } else {
+    cout << "Error '" << nombreArchivo << "' no es un archivo" << endl;
+  }
+}
+
 /*
 void imprimirBloque(Disco *disco) {
   int cantBlo = cantidadBloques(disco->inodos[0].posBloque);

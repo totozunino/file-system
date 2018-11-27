@@ -27,20 +27,18 @@ int main(int argc, char *argv[]) {
         if (disco != (void *) -1) {
           int inodo;
           if (existeRuta(disco, strArray, largo, inodo)) {
-            // Si lo que quiero mostrar es el disco se mete en el else
             if (largo > 1) {
               int *posBloques = disco->inodos[inodo].posBloque;
               if (existeDirectorio(disco, strArray[largo - 1], posBloques)) {
-                mostrarDir(disco, strArray[largo - 1], disco->inodos[inodo].posBloque);
+                imprimirArchivo(disco, strArray[largo - 1], posBloques);
                 if (shmdt(disco) == -1) {
                   cout << "Error al liberar la memoria compartida" << endl;
                 }
               } else {
-                cout << "Error el directorio '" << strArray[largo - 1] << "' no existe" << endl;
+                cout << "Error el archivo '" << strArray[largo - 1] << "' no existe" << endl;
               }
             } else {
-              // Muestro el contenido del disco
-              mostrarDir(disco, strArray[0], disco->inodos[0].posBloque);
+              cout << "Error '" << argv[1] << "' no es un archivo" << endl;
             }
           } else {
             cout << "Error la ruta igresada no es valida" << endl;
@@ -55,6 +53,6 @@ int main(int argc, char *argv[]) {
       cout << "Error el disco '" << strArray[0] << "' no existe" << endl;
     }
   } else {
-    cout << "Error ingrese correctamente el directorio que desea mostrar" << endl;
+    cout << "Error ingrese correctamente el archivo que desea leer" << endl;
   }
 }
