@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
               if (existeRuta(disco, strArray, largo, inodo)) {
                 int *posBloques = disco->inodos[inodo].posBloque;
                 if (!existeDirectorio(disco, strArray[largo - 1], posBloques)) {
-                  crearDirectorio(disco, strArray[largo - 1], posBloques);
+                  crearArchivo(disco, strArray[largo - 1], posBloques, true);
                   if (shmdt(disco) == -1) {
                     cout << "Error al liberar la memoria compartida" << endl;
                   }

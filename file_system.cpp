@@ -149,7 +149,7 @@ int obtenerBloqueLibre(Disco *disco) {
   return bloque;
 }
 
-void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
+void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir) {
   int i = 0;
   bool dirCreado = false;
   bool asigneBloque = false;
@@ -166,13 +166,17 @@ void crearDirectorio(Disco *disco, string nombreDir, int *posBloques) {
         directorio += ":";
         strcat(disco->bloques[posBloques[i]].datos, directorio.c_str());
         disco->inodos[inodo].ocupado = true;
-        disco->inodos[inodo].esDIR = true;
+        disco->inodos[inodo].esDIR = esDir;
         int bloque = obtenerBloqueLibre(disco);
         if (bloque != -1) {
           disco->inodos[inodo].posBloque[0] = bloque;
           disco->bloques[bloque].ocupado = true;
           dirCreado = true;
-          cout << "El directorio '" << nombreDir << "' se creo correctamente" << endl;
+          if (esDir) {
+            cout << "El directorio '" << nombreDir << "' se creo correctamente" << endl;
+          } else {
+            cout << "El archivo '" << nombreDir << "' se creo correctamente" << endl;
+          }
         } else {
           dirCreado = true;
           cout << "No hay suficientes bloques en el sistema de archivos" << endl;
@@ -256,6 +260,9 @@ bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal) {
     int *posBloques = disco->inodos[inodo].posBloque;
     if (existeDirectorio(disco, strArray[i], posBloques)) {
       inodo = obtenerInodo(disco, strArray[i], posBloques);
+      if (!disco->inodos[inodo].esDIR) {
+        existeRuta = false;
+      }
       i++;
     } else {
       existeRuta = false;
@@ -265,12 +272,12 @@ bool existeRuta(Disco *disco, string *strArray, int largo, int &inodoFinal) {
   return existeRuta;
 }
 
-bool checkNombreArchivo(char *nombreArchivo) {
-  if (strlen(nombreArchivo) <= 8) {
+bool checkNombreArchivo(string nombreArchivo) {
+  if (nombreArchivo.length() <= 8) {
     return true;
   } else {
-    if (strlen(nombreArchivo) < 13) {
-      return nombreArchivo[9] == '.';
+    if (nombreArchivo.length() < 13) {
+      return nombreArchivo[8] == '.';
     } else {
       return false;
     }

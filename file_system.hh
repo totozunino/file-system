@@ -56,7 +56,7 @@ int obtenerInodoLibre(Disco *disco);
 int obtenerBloqueLibre(Disco *disco);
 
 // Crea el directorio
-void crearDirectorio(Disco *disco, string nombreDir, int *posBloques);
+void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir);
 
 // void imprimirBloque(Disco *disco);
 
@@ -67,6 +67,6 @@ bool checkNombreDisco(char *nombreDisco);
 void mostrarDir(Disco *disco, string nombreDir, int *posBloques);
 
 // Retorna true si el nombre del archivo es correcto
-bool checkNombreArchivo(char *nombreArchivo);
+bool checkNombreArchivo(string nombreArchivo);
 
 #endif
