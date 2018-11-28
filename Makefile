@@ -1,4 +1,4 @@
-all: disk rmdisk makedir showdir makefile showfile fs
+all: disk rmdisk makedir showdir rmdir makefile showfile fs
 
 disk: crear_disco.cpp file_system.o
 	g++ -Wall -g crear_disco.cpp file_system.o -o crear_disco
@@ -11,6 +11,9 @@ makedir: crear_dir.cpp file_system.o
 
 showdir: muestra_dir.cpp file_system.o
 	g++ -Wall -g muestra_dir.cpp file_system.o -o muestra_dir
+
+rmdir: borro_dir.cpp file_system.o
+	g++ -Wall -g borro_dir.cpp file_system.o -o borro_dir
 
 makefile: crear_archivo.cpp file_system.o
 	g++ -Wall -g crear_archivo.cpp file_system.o -o creo_archivo

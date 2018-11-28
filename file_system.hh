@@ -61,6 +61,12 @@ void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir);
 // Imprime el contenido de un archivo
 void imprimirArchivo(Disco *disco, string nombreArchivo, int *posBloques);
 
+// Escribo  al final del archivo el texto ingresado
+void escribirArchivo(Disco *disco, string nombreArchivo, int *posBloques, char *datos);
+
+// Borra una directorio
+void borrarDirectorio(Disco *disco, string nombreDirectorio, int *posBloques);
+
 // void imprimirBloque(Disco *disco);
 
 // Retorna true si el nombre del disco es correcto

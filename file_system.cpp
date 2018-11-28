@@ -152,18 +152,17 @@ int obtenerBloqueLibre(Disco *disco) {
 void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir) {
   int i = 0;
   bool dirCreado = false;
-  bool asigneBloque = false;
   while (i < cantidadBloques(posBloques) && !dirCreado) {
     string directorio = nombreDir;
     directorio += ":";
     if (obtenerInodoLibre(disco) != -1) {
+      int inodo = obtenerInodoLibre(disco);
+      directorio += to_string(inodo);
+      directorio += ":";
       string datos = disco->bloques[posBloques[i]].datos;
       size_t tamDatos = 512;
       size_t tamRequerido = strlen(directorio.c_str()) + datos.length();
       if (tamDatos > tamRequerido) {
-        int inodo = obtenerInodoLibre(disco);
-        directorio += to_string(inodo);
-        directorio += ":";
         strcat(disco->bloques[posBloques[i]].datos, directorio.c_str());
         disco->inodos[inodo].ocupado = true;
         disco->inodos[inodo].esDIR = esDir;
@@ -171,6 +170,7 @@ void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir) {
         if (bloque != -1) {
           disco->inodos[inodo].posBloque[0] = bloque;
           disco->bloques[bloque].ocupado = true;
+          strcpy(disco->bloques[bloque].datos, "");
           dirCreado = true;
           if (esDir) {
             cout << "El directorio '" << nombreDir << "' se creo correctamente" << endl;
@@ -182,25 +182,20 @@ void crearArchivo(Disco *disco, string nombreDir, int *posBloques, bool esDir) {
           cout << "No hay suficientes bloques en el sistema de archivos" << endl;
         }
       } else {
-        if (i < 3 && !asigneBloque) {
-          if (cantidadBloques(posBloques) < 4) {
+        if (i != 3) {
+          if (i == cantidadBloques(posBloques) - 1) {
             int bloque = obtenerBloqueLibre(disco);
             disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque[cantidadBloques(posBloques)] = bloque;
             disco->bloques[bloque].ocupado = true;
+            strcpy(disco->bloques[bloque].datos, "");
             posBloques = disco->inodos[obtenerInodo(disco, nombreDir, posBloques)].posBloque;
-            asigneBloque = true;
             i++;
           } else {
             i++;
-            if (i == 3) {
-              asigneBloque = true;
-            }
           }
-        } else if (asigneBloque && i == 3) {
-          dirCreado = true;
-          cout << "No hay espacio suficiente para poder crear " << nombreDir << endl;
         } else {
-          i++;
+          cout << "No hay espacio suficiente para poder crear " << nombreDir << endl;
+          dirCreado = true;
         }
       }
     } else {
@@ -294,6 +289,67 @@ void imprimirArchivo(Disco *disco, string nombreArchivo, int *posBloques) {
     }
   } else {
     cout << "Error '" << nombreArchivo << "' no es un archivo" << endl;
+  }
+}
+
+void escribirArchivo(Disco *disco, string nombreArchivo, int *posBloques, char *datos) {
+  int inodo = obtenerInodo(disco, nombreArchivo, posBloques);
+  if (!disco->inodos[inodo].esDIR) {
+    int *bloques = disco->inodos[inodo].posBloque;
+    int cantBloques = cantidadBloques(bloques);
+    int cantDatos = strlen(datos);
+    int cantEscritos = 0;
+    while (cantDatos != cantEscritos) {
+      // to do escribir archivo function
+      //size_t
+      //tamRequerido = cantDatos + disco
+      //if (cantDatos <)
+    }
+  } else {
+    cout << "Error '" << nombreArchivo << "' no es un archivo" << endl;
+  }
+}
+
+bool esVacio(Disco *disco, int *posBloques) {
+  bool esVacio = true;
+  if (disco->bloques[posBloques[0]].datos[0] != '\377' && disco->bloques[posBloques[0]].datos[0] != '\000') {
+    esVacio = false;
+  }
+  return esVacio;
+}
+
+void borrarDirectorio(Disco *disco, string nombreDirectorio, int *posBloques) {
+  int inodo = obtenerInodo(disco, nombreDirectorio, posBloques);
+  if (disco->inodos[inodo].esDIR) {
+    int *bloques = disco->inodos[inodo].posBloque;
+    if (esVacio(disco, bloques)) {
+      int cantBloques = cantidadBloques(posBloques);
+      int i = 0;
+      bool salir = false;
+      while (i < cantBloques && !salir) {
+        if (encontreNombre(disco->bloques[posBloques[i]].datos, nombreDirectorio)) {
+          string strDatos = disco->bloques[posBloques[i]].datos;
+          string strNombre = nombreDirectorio;
+          strNombre += ":";
+          strNombre += to_string(inodo);
+          strNombre += ":";
+          int pos = strDatos.find(strNombre, 0);
+          strDatos.erase(pos, strNombre.length());
+          strcpy(disco->bloques[posBloques[i]].datos, strDatos.c_str());
+          disco->inodos[inodo].ocupado = false;
+          disco->bloques[bloques[0]].ocupado = false;
+          disco->inodos[inodo].posBloque[0] = -1;
+          cout << "El directorio '" << nombreDirectorio << "' se borro correctamente" << endl;
+          salir = true;
+        } else {
+          i++;
+        }
+      }
+    } else {
+      cout << "Error el directorio '" << nombreDirectorio << "' debe de ser vacio" << endl;
+    }
+  } else {
+    cout << "Error '" << nombreDirectorio << "' no es un directorio" << endl;
   }
 }
 
