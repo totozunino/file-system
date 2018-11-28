@@ -353,6 +353,40 @@ void borrarDirectorio(Disco *disco, string nombreDirectorio, int *posBloques) {
   }
 }
 
+void borrarArchivo(Disco *disco, string nombreArchivo, int *posBloques) {
+  int inodo = obtenerInodo(disco, nombreArchivo, posBloques);
+  if (!disco->inodos[inodo].esDIR) {
+    int *bloques = disco->inodos[inodo].posBloque;
+    int cantBloques = cantidadBloques(posBloques);
+    int i = 0;
+    bool salir = false;
+    while (i < cantBloques && !salir) {
+      if (encontreNombre(disco->bloques[posBloques[i]].datos, nombreArchivo)) {
+        string strDatos = disco->bloques[posBloques[i]].datos;
+        string strNombre = nombreArchivo;
+        strNombre += ":";
+        strNombre += to_string(inodo);
+        strNombre += ":";
+        int pos = strDatos.find(strNombre, 0);
+        strDatos.erase(pos, strNombre.length());
+        strcpy(disco->bloques[posBloques[i]].datos, strDatos.c_str());
+        disco->inodos[inodo].ocupado = false;
+        for (int j = 0; j < cantidadBloques(bloques); j++) {
+          disco->bloques[bloques[j]].ocupado = false;
+          disco->inodos[inodo].posBloque[j] = -1;
+          strcpy(disco->bloques[bloques[j]].datos, "");
+        }
+        cout << "El directorio '" << nombreArchivo << "' se borro correctamente" << endl;
+        salir = true;
+      } else {
+        i++;
+      }
+    }
+  } else {
+    cout << "Error '" << nombreArchivo << "' no es un archivo" << endl;
+  }
+}
+
 /*
 void imprimirBloque(Disco *disco) {
   int cantBlo = cantidadBloques(disco->inodos[0].posBloque);

@@ -67,6 +67,8 @@ void escribirArchivo(Disco *disco, string nombreArchivo, int *posBloques, char *
 // Borra una directorio
 void borrarDirectorio(Disco *disco, string nombreDirectorio, int *posBloques);
 
+// Borra un archivo
+void borrarArchivo(Disco *disco, string nombreArchivo, int *posBloques);
 // void imprimirBloque(Disco *disco);
 
 // Retorna true si el nombre del disco es correcto
